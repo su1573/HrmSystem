@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dept">
+	<!-- 分页查询 -->
+	<select id="findDeptByPage" parameterType="dept" resultType="dept">
+		select * from deptTable where deptName like '%${deptName}%'
+	</select>
+	
+	<!-- 查询 -->
+	<select id="findCount" parameterType="dept" resultType="java.lang.Integer" >
+		select count(*) from deptTable where deptName like '%${deptName}%'
+	</select>
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="document">
+	
+	<!-- 文件和用户关联 -->
+	<resultMap type="com.su.domain.Document" id="DocumentWithUser" >
+		<id column="documentId" property="documentId"/>
+		<result column="documentTitle" property="documentTitle"/>
+		<result column="fileName" property="fileName"/>
+		<result column="documentDesc" property="documentDesc"/>
+		<result column="documentCreateDate" property="documentCreateDate"/>
+		<result column="userId" property="userId"/>
+		<association property="user" javaType="com.su.domain.User">
+			<id column="userId" property="userId"/>
+			<result column="loginName" property="loginName"/>
+			<result column="loginPwd" property="loginPwd"/>
+			<result column="userStatus" property="userStatus"/>
+			<result column="userCreateDate" property="userCreateDate"/>
+			<result column="userName" property="userName"/>
+		</association>
+	</resultMap>
+	
+	
+	<!-- 按条件分页查询 -->
+	<select id="findDocByPageName" parameterType="document" resultMap="DocumentWithUser">
+		select documentTable.*,userTable.userName
+		from documentTable,userTable
+		where documentTable.userId = userTable.userId 
+			  and documentTable.documentTitle like '%${documentTitle}%'
+	</select>
+	
+	<!-- 查询全部文件条数 -->
+	<select id="findAllDoc" resultType="java.lang.Integer">
+		select count(*) from documentTable
+	</select>
+	
+	<!-- 按条件查询全部文件条数 -->
+	<select id="findAllDocByName" parameterType="document" resultType="java.lang.Integer">
+		select count(*) from documentTable 
+		where documentTitle like '%${documentTitle}%'
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

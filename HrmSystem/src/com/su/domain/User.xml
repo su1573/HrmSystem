@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+	
+	<!-- 登录 -->
+	<select id="checkUserLogin" parameterType="user" resultType="user">
+		select * from userTable where loginName = #{loginName} and loginPwd = #{loginPwd}
+	</select>
+	
+	<!-- 获取用户总记录数 -->
+	<select id="findUserToCount" resultType="java.lang.Integer">
+		select count(*) from userTable
+	</select>
+	
+	<!-- 根据条件查询记录数 -->
+	<select id="findNameCount" resultType="java.lang.Integer" parameterType="user">
+		select count(*) from userTable where userName like '%${userName}%'
+	</select>
+	
+	<!-- 查询全部用户 -->
+	<select id="findAllUser" resultType="user">
+		select * from userTable
+	</select>
+	
+	<!-- 添加用户 -->
+	<insert id="addUser" parameterType="user">
+		<selectKey keyProperty="userId" order="BEFORE" resultType="java.lang.Integer">
+			SELECT user_seq.nextval from dual
+		</selectKey>
+		insert into userTable values(#{userId},#{loginName},#{loginPwd},#{userStatus},#{userCreateDate},#{userName})
+	</insert>
+	
+	<!-- 根据id删用户 -->
+	<delete id="deleteUser" parameterType="java.lang.Integer">
+		delete from userTable where userId=#{userId}
+	</delete>
+	
+	<!-- 根据用户名模糊查找 -->
+	<select id="findUserByName" parameterType="java.lang.String" resultType="user">
+		select * from userTable where userName like '%${value}%'
+	</select>
+	
+	<!-- 根据id查找用户 -->
+	<select id="findUserById" parameterType="java.lang.Integer" resultType="user">
+		select * from userTable where userId = #{userId}
+	</select>
+	
+	<!-- 更新用户 -->
+	<update id="updateUser" parameterType="user">
+		update userTable set loginName=#{loginName},loginPwd=#{loginPwd},userStatus=#{userStatus},
+		userCreateDate=#{userCreateDate},userName=#{userName} where userId=#{userId}
+	</update>
+	
+	<!-- 分页查询 -->
+	<select id="findUserByPage" parameterType="user" resultType="user">
+		select * from userTable
+	</select>
+	
+	<!-- 根据条件分页查询 -->
+	<select id="findUserByPageName" parameterType="user" resultType="user">
+		select * from userTable where userName like '%${userName}%'
+	</select>
+	
+	
+</mapper>

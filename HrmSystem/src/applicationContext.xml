@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+		
+
+	
+	
+	<!-- 加载配置文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+
+	<!-- 数据源，使用dbcp -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driverClass}"/>
+		<property name="url" value="${jdbcUrl}"/>
+		<property name="username" value="${user}"/>
+		<property name="password" value="${password}"/>
+		<property name="maxActive" value="10"/>
+		<property name="maxIdle" value="5"/>
+	</bean>
+
+	<!-- sqlSessinFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 加载mybatis的配置文件 -->
+		<property name="configLocation" value="classpath:mybatisconfig.xml"/>
+		<!-- 数据源 -->
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- Dao配置 -->
+	<bean id="studentDao" class="com.su.dao.impl.StudentDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="userDao" class="com.su.dao.impl.UserDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="deptDao" class="com.su.dao.impl.DeptDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="jobDao" class="com.su.dao.impl.JobDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="employeeDao" class="com.su.dao.impl.EmployeeDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="noticeDao" class="com.su.dao.impl.NoticeDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="documentDao" class="com.su.dao.impl.DocumentDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	
+	
+	<!-- Mapper配置 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.su.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	
+	<!-- 配置Service层 -->
+	<bean id="studentService" class="com.su.service.impl.StudentServiceImpl"></bean>
+	<bean id="userService" class="com.su.service.impl.UserServiceImpl"></bean>
+	<bean id="deptService" class="com.su.service.impl.DeptServiceImpl"></bean>
+	<bean id="jobService" class="com.su.service.impl.JobServiceImpl"></bean>
+	<bean id="employeeService" class="com.su.service.impl.EmployeeServiceImpl"></bean>
+	<bean id="noticeService" class="com.su.service.impl.NoticeServiceImpl"></bean>
+	<bean id="documentService" class="com.su.service.impl.DocumentServiceImpl"></bean>
+	
+	<!-- 事务控制 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="search*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="get*" propagation="NEVER"/>
+			<tx:method name="set*" propagation="NEVER"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.su.service.impl.*.*(..))" />
+	</aop:config>
+</beans>
+
+ 

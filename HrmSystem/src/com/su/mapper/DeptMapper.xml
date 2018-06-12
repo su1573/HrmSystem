@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.su.mapper.DeptMapper">
+	
+	<!-- 查询全部部门 -->
+	<select id="findAllDept" resultType="dept">
+		select * from deptTable
+	</select>
+	
+	<!-- 根据部门名称查找 -->
+	<select id="findDeptByName" parameterType="java.lang.String" resultType="dept">
+		select * from deptTable where deptName like '%${value}%'
+	</select>
+	
+	<!-- 根据id查找部门 -->
+	<select id="findDeptById" parameterType="java.lang.Integer" resultType="dept">
+		select * from deptTable where deptId = #{deptId}
+	</select>
+	
+	<!-- 根据Id删除部门 -->
+	<select id="deleteDept" parameterType="java.lang.Integer">
+		delete from deptTable where deptId = #{deptId}
+	</select>
+	
+	<!-- 更新部门 -->
+	<update id="updateDept" parameterType="dept">
+		update deptTable set deptName=#{deptName},deptDesc=#{deptDesc} where deptId=#{deptId} 
+	</update>
+	
+	<!-- 新增部门 -->
+	<insert id="addDept" parameterType="dept">
+		<selectKey keyProperty="deptId" order="BEFORE" resultType="java.lang.Integer">
+			SELECT dept_seq.nextval from dual
+		</selectKey>
+		insert into deptTable values(#{deptId},#{deptName},#{deptDesc})
+	</insert>
+	
+	
+	<!-- 分页查询 -->
+	<select id="findDeptByPage" parameterType="dept" resultType="dept">
+		select * from deptTable where deptName like '%${deptName}%'
+	</select>
+	
+	<!-- 查询 -->
+	<select id="findCount" resultType="java.lang.Integer">
+		select count(*) from deptTable
+	</select>
+	
+	
+	
+	
+	
+	
+</mapper>

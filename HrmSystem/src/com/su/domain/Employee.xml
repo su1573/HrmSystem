@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="employee">
+	
+	<!-- 《员工与部门相关联》 -->
+	<resultMap type="com.su.domain.Employee" id="EmployeeWithDept">
+		<id column="employeeId" property="employeeId"/>
+		<result column="deptId" property="deptId"/>
+		<result column="jobId" property="jobId"/>
+		<result column="employeeName" property="employeeName"/>
+		<result column="employeeCardId" property="employeeCardId"/>
+		<result column="employeeAddress" property="employeeAddress"/>
+		<result column="employeePostCode" property="employeePostCode"/>
+		<result column="employeePhone" property="employeePhone"/>
+		<result column="employeeQQ" property="employeeQQ"/>
+		<result column="employeeEmail" property="employeeEmail"/>
+		<result column="employeeSex" property="employeeSex"/>
+		<result column="employeeParty" property="employeeParty"/>
+		<result column="employeeBirthday" property="employeeBirthday"/>
+		<result column="employeeRace" property="employeeRace"/>
+		<result column="employeeEducation" property="employeeEducation"/>
+		<result column="employeeHobby" property="employeeHobby"/>
+		<result column="employeeCreateDate" property="employeeCreateDate"/>
+		<association property="dept" javaType="com.su.domain.Dept">
+			<id column="deptId" property="deptId"/>
+			<result column="deptName" property="deptName"/>
+			<result column="deptDesc" property="deptDesc"/>
+		</association>
+	</resultMap>
+	
+	<!-- 《员工与职业相关联 》“继承”《员工与部门相关联》 -->
+	<resultMap type="com.su.domain.Employee" id="EmployeeWithJobExtendDept" extends="EmployeeWithDept">
+		<collection property="job" ofType="com.su.domain.Job">
+			<id column="jobId" property="jobId"/>
+			<result column="jobName" property="jobName"/>
+			<result column="jobDesc" property="jobDesc"/>
+		</collection>
+	</resultMap>
+	
+	<!-- 根据条件分页查询 -->
+	<select id="findEmployeeByPageName" parameterType="employee" resultMap="EmployeeWithJobExtendDept">
+		select employeeTable.*,jobTable.jobName,deptTable.deptName
+		from employeeTable,jobTable,deptTable
+		where  jobTable.jobId = #{jobId}  and deptTable.deptId = #{deptId}
+				and employeeTable.employeeName like '%${employeeName}%' and employeeTable.employeeCardId = #{employeeCardId} 
+			  	and employeeTable.employeePhone = #{employeePhone} and employeeTable.jobId = #{jobId} 
+			  	and employeeTable.deptId = #{deptId} and employeeTable.employeeSex = #{employeeSex}
+	</select>
+	
+	<!-- 点击查询全部员工信息 -->
+	<select id="findAllCount" resultType="java.lang.Integer">
+		select count(*) from employeeTable
+	</select>
+	
+	
+	
+	<!-- 查询记录数 -->
+	<select id="findCount" parameterType="employee" resultType="java.lang.Integer">
+		select count(*) from employeeTable,jobTable,deptTable
+		where  jobTable.jobId = #{jobId}  and deptTable.deptId = #{deptId}
+				and employeeTable.employeeName like '%${employeeName}%' and employeeTable.employeeCardId = #{employeeCardId} 
+			  	and employeeTable.employeePhone = #{employeePhone} and employeeTable.jobId = #{jobId} 
+			  	and employeeTable.deptId = #{deptId} and employeeTable.employeeSex = #{employeeSex}
+	</select>
+	
+	
+	<!-- 员工、部门、职位 -->
+	<select id="findEmployeeByPage" resultMap="EmployeeWithJobExtendDept" parameterType="employee">
+		select employeeTable.*,jobTable.jobName,deptTable.deptName
+		from employeeTable,jobTable,deptTable
+		where employeeTable.jobId = jobTable.jobId and employeeTable.deptId = deptTable.deptId 
+	</select>
+
+
+</mapper>

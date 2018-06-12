@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.su.mapper.JobMapper">
+	
+	<!-- 新增职位 -->
+	<insert id="addJob" parameterType="job">
+		<selectKey keyProperty="jobId" order="BEFORE" resultType="java.lang.Integer">
+			SELECT dept_seq.nextval from dual
+		</selectKey>
+		insert into jobTable values(#{jobId},#{jobName},#{jobDesc})
+	</insert>
+	
+	<!-- 根据id查找工作 -->
+	<select id="findJobById" parameterType="java.lang.Integer" resultType="job">
+		select * from jobTable where jobId = #{jobId}
+	</select>
+	
+	<!-- 更新Job -->
+	<update id="updateJob" parameterType="job">
+		update jobTable set jobName=#{jobName},jobDesc=#{jobDesc} where jobId=#{jobId}
+	</update>
+	
+	<!-- 根据Id删除Job -->
+	<delete id="deleteJobById" parameterType="java.lang.Integer">
+		delete from jobTable where jobId = #{jobId}
+	</delete>
+	
+	<!-- 查询全部 -->
+	<select id="findAllJob" resultType="job">
+		select * from jobTable
+	</select>
+	
+	
+	
+	
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!--  -->
+	<typeAliases>
+		<!-- 单个类定义别名 type:类型的路径 alias:别名-->
+		<!-- <typeAlias type="com.mbd.domain.Student" alias="student"/> -->
+		<!-- 指定包名，mybatis自动扫描包中所有实体类，自动定义别名，别名就是类名（首字母大写或小写都可以）-->
+		<package name="com.su.domain"/>
+	</typeAliases>
+	
+	<!-- 加载映射文件 -->
+	<mappers>
+		<mapper resource="com/su/domain/Student.xml"/>
+		<mapper resource="com/su/domain/User.xml"/>
+		<mapper resource="com/su/domain/Dept.xml"/>
+		<mapper resource="com/su/domain/Job.xml"/>
+		<mapper resource="com/su/domain/Employee.xml"/>
+		<mapper resource="com/su/domain/Notice.xml"/>
+		<mapper resource="com/su/domain/Document.xml"/>
+		
+		<package name="com.su.mapper"/>
+	</mappers>
+
+	
+	
+	
+	
+</configuration>
